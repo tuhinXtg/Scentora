@@ -1,0 +1,5 @@
+# Environment variables
+src/.env
+
+# Environment config
+src/config/env.ts
