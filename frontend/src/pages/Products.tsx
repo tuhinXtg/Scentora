@@ -34,9 +34,9 @@ function Products() {
 
   return (
     <main>
-      <h1>Our Perfumes</h1>
+      <h1 className="my-3 text-center font-serif font-bold">Our Perfumes</h1>
 
-      <div>
+      <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

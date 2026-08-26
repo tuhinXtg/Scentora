@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 function Navbar() {
   return (
     <nav className="flex items-center justify-between border-b px-8 py-4">
-      <Link to="/" className="text-2xl font-bold">
+      <Link to="/" className="text-2xl font-bold font-serif">
         Scentora
       </Link>
 
