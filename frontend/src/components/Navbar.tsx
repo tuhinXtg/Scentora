@@ -1,14 +1,17 @@
+import { Link } from 'react-router-dom'
+
 function Navbar() {
   return (
     <nav className="flex items-center justify-between border-b px-8 py-4">
-      <h1 className="text-2xl font-bold">
+      <Link to="/" className="text-2xl font-bold">
         Scentora
-      </h1>
+      </Link>
 
       <div className="flex gap-6">
-        <a href="/">Home</a>
-        <a href="/products">Products</a>
-        <a href="/about">About</a>
+        <Link to="/">Home</Link>
+        <Link to="/products">Products</Link>
+        <Link to="/cart">Cart</Link>
+        <Link to="/login">Login</Link>
       </div>
     </nav>
   )
