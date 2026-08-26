@@ -1,5 +1,7 @@
 import type { Product } from "../types/product";
 
+import { Link } from "react-router-dom";
+
 interface ProductCardProps {
   product: Product;
 }
@@ -42,12 +44,12 @@ function ProductCard({ product }: ProductCardProps) {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="mt-5 w-full rounded-xl bg-gray-900 px-4 py-3 font-medium text-white transition hover:bg-gray-700"
+        <Link
+          to={`/products/${product.id}`}
+          className="mt-5 block w-full rounded-xl bg-gray-900 px-4 py-3 text-center font-medium text-white transition hover:bg-gray-700"
         >
           View Product
-        </button>
+        </Link>
       </div>
     </article>
   );

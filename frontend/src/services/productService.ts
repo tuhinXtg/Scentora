@@ -11,3 +11,13 @@ export async function getProducts(): Promise<Product[]> {
 
   return response.json();
 }
+
+export async function getProduct(productId: number): Promise<Product> {
+  const response = await fetch(`${API_URL}/products/${productId}`);
+
+  if (!response.ok) {
+    throw new Error("Product not found");
+  }
+
+  return response.json();
+}
