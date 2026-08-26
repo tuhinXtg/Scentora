@@ -9,6 +9,11 @@ class ProductCreate(BaseModel):
     price: Decimal
     stock: int = 0
 
+class ProductUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    price: Decimal | None = None
+    stock: int | None = None
 
 class ProductResponse(BaseModel):
     id: int
