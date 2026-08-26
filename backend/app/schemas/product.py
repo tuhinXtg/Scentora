@@ -8,12 +8,14 @@ class ProductCreate(BaseModel):
     description: str | None = None
     price: Decimal
     stock: int = 0
+    image_url: str | None = None
 
 class ProductUpdate(BaseModel):
     name: str | None = None
     description: str | None = None
     price: Decimal | None = None
     stock: int | None = None
+    image_url: str | None = None 
 
 class ProductResponse(BaseModel):
     id: int
@@ -21,5 +23,6 @@ class ProductResponse(BaseModel):
     description: str | None
     price: Decimal
     stock: int
+    image_url: str | None
 
     model_config = ConfigDict(from_attributes=True)

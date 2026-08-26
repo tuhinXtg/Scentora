@@ -14,3 +14,4 @@ class Product(Base):
     description: Mapped[str | None]
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     stock: Mapped[int] = mapped_column(default=0)
+    image_url: Mapped[str | None] = mapped_column(String(500))
