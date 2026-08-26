@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["Products"],
 )
 
-
+# upload products
 @router.post(
     "",
     response_model=ProductResponse,
@@ -34,6 +34,7 @@ def create_product(
 
     return product
 
+# get all products
 @router.get("", response_model=list[ProductResponse])
 def get_products(
     db: Session = Depends(get_db),
@@ -41,3 +42,19 @@ def get_products(
     products = db.query(Product).all()
 
     return products
+
+# get specific product
+@router.get("/{product_id}", response_model=ProductResponse)
+def get_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+):
+    product = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found",
+        )
+
+    return product
