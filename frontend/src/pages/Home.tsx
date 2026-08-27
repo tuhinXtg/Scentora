@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import type { Product } from "../types/product";
 import { getProducts } from "../services/productService";
+import ProductSkeleton from "../components/ProductSkeleton";
 
 function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -144,15 +145,21 @@ function Home() {
         {/* Placeholder featured cards */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-          {loading && (
-            <div className="col-span-full py-12 text-center text-stone-500">
-              Discovering fragrances...
-            </div>
-          )}
+          {loading &&
+            Array.from({ length: 3 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))}
 
           {error && (
-            <div className="col-span-full py-12 text-center text-red-500">
-              {error}
+            <div className="col-span-full rounded-2xl border border-stone-200 bg-white px-6 py-12 text-center">
+              <h3 className="text-xl font-semibold text-stone-900">
+                Something went wrong.
+              </h3>
+
+              <p className="mt-2 text-sm text-stone-500">
+                We couldn't load our fragrances right now.
+                Please try again later.
+              </p>
             </div>
           )}
 
@@ -197,6 +204,21 @@ function Home() {
                 </div>
               </Link>
             ))}
+
+          {!loading &&
+            !error &&
+            products.length === 0 && (
+              <div className="col-span-full rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-16 text-center">
+                <h3 className="text-xl font-semibold text-stone-900">
+                  Our collection is coming soon.
+                </h3>
+
+                <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-500">
+                  We're carefully preparing our fragrance collection.
+                  Check back soon to discover something special.
+                </p>
+              </div>
+            )}
 
         </div>
       </section>
