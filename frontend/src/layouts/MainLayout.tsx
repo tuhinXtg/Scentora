@@ -1,17 +1,17 @@
-import { Outlet } from 'react-router-dom'
+// import { Outlet } from 'react-router-dom'
 
-import Navbar from '../components/Navbar'
+// import Navbar from '../components/Navbar'
 
-function MainLayout() {
-  return (
-    <>
-      <Navbar />
+// function MainLayout() {
+//   return (
+//     <>
+//       <Navbar />
 
-      <main>
-        <Outlet />
-      </main>
-    </>
-  )
-}
+//       <main>
+//         <Outlet />
+//       </main>
+//     </>
+//   )
+// }
 
-export default MainLayout
+// export default MainLayout
