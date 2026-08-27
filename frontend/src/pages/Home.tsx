@@ -1,6 +1,30 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import type { Product } from "../types/product";
+import { getProducts } from "../services/productService";
+
 function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const data = await getProducts();
+
+        setProducts(data.slice(0, 3));
+      } catch {
+        setError("Unable to load fragrances.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, []);
+
   return (
     <main className="bg-stone-50 text-stone-900">
 
@@ -120,77 +144,59 @@ function Home() {
         {/* Placeholder featured cards */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-          <div className="group overflow-hidden rounded-2xl bg-white shadow-sm">
-            <div className="aspect-4/5 overflow-hidden bg-stone-100">
-              <img
-                src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=800&q=85"
-                alt="Featured fragrance"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
+          {loading && (
+            <div className="col-span-full py-12 text-center text-stone-500">
+              Discovering fragrances...
             </div>
+          )}
 
-            <div className="p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                Signature
-              </p>
-
-              <h3 className="mt-2 text-lg font-semibold">
-                Discover Your Scent
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-stone-500">
-                Explore fragrances designed to leave a lasting impression.
-              </p>
+          {error && (
+            <div className="col-span-full py-12 text-center text-red-500">
+              {error}
             </div>
-          </div>
+          )}
 
-          <div className="group overflow-hidden rounded-2xl bg-white shadow-sm">
-            <div className="aspect-4/5 overflow-hidden bg-stone-100">
-              <img
-                src="https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=800&q=85"
-                alt="Luxury fragrance"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-            </div>
+          {!loading &&
+            !error &&
+            products.map((product) => (
+              <Link
+                key={product.id}
+                to={`/products/${product.id}`}
+                className="group overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
+              >
+                <div className="aspect-4/5 overflow-hidden bg-stone-100">
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm text-stone-400">
+                      No image
+                    </div>
+                  )}
+                </div>
 
-            <div className="p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                Refined
-              </p>
+                <div className="p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                    Fragrance
+                  </p>
 
-              <h3 className="mt-2 text-lg font-semibold">
-                Crafted Elegance
-              </h3>
+                  <h3 className="mt-2 text-lg font-semibold text-stone-900">
+                    {product.name}
+                  </h3>
 
-              <p className="mt-2 text-sm leading-6 text-stone-500">
-                Sophisticated notes for unforgettable moments.
-              </p>
-            </div>
-          </div>
+                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-500">
+                    {product.description}
+                  </p>
 
-          <div className="group overflow-hidden rounded-2xl bg-white shadow-sm sm:col-span-2 lg:col-span-1">
-            <div className="aspect-4/5 overflow-hidden bg-stone-100">
-              <img
-                src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=85"
-                alt="Perfume collection"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-            </div>
-
-            <div className="p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                Collection
-              </p>
-
-              <h3 className="mt-2 text-lg font-semibold">
-                Find Your Signature
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-stone-500">
-                Something distinctive for every personality.
-              </p>
-            </div>
-          </div>
+                  <p className="mt-4 font-medium text-stone-900">
+                    BDT{Number(product.price).toLocaleString()}
+                  </p>
+                </div>
+              </Link>
+            ))}
 
         </div>
       </section>
