@@ -2,6 +2,7 @@ import {
     createContext,
     useContext,
     useState,
+    useEffect,
     type ReactNode,
 } from "react";
 
@@ -25,7 +26,26 @@ interface CartProviderProps {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-    const [items, setItems] = useState<CartItem[]>([]);
+    const [items, setItems] = useState<CartItem[]>(() => {
+        const savedCart = localStorage.getItem("scentora-cart");
+
+        if (!savedCart) {
+            return [];
+        }
+
+        try {
+            return JSON.parse(savedCart) as CartItem[];
+        } catch {
+            return [];
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem(
+            "scentora-cart",
+            JSON.stringify(items)
+        );
+    }, [items]);
 
     function addToCart(product: Product) {
         setItems((currentItems) => {
