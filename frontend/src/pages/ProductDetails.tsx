@@ -84,15 +84,15 @@ function ProductDetails() {
           <div className="grid lg:grid-cols-2">
 
             {/* Product image */}
-            <div className="flex min-h-[450px] items-center justify-center bg-stone-100 p-8 sm:p-12 lg:min-h-[650px]">
+            <div className="flex min-h-112.5 items-center justify-center bg-stone-100 p-8 sm:p-12 lg:min-h-162.5">
               {product.image_url ? (
                 <img
                   src={product.image_url}
                   alt={product.name}
-                  className="max-h-[550px] w-full object-contain transition duration-500 hover:scale-105"
+                  className="max-h-137.5 w-full object-contain transition duration-500 hover:scale-105"
                 />
               ) : (
-                <div className="flex h-full min-h-[400px] w-full items-center justify-center text-gray-400">
+                <div className="flex h-full min-h-100 w-full items-center justify-center text-gray-400">
                   No image available
                 </div>
               )}
