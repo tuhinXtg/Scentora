@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
+import { CartProvider } from "./context/CartContext";
 
 //layouts import
 // import MainLayout from './layouts/MainLayout'
@@ -16,18 +16,20 @@ import Navbar from './components/Navbar'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar/>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:productId" element={<ProductDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/checkout" element={<Checkout />} />
-      </Routes>
-    </BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
+        <Navbar/>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:productId" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/checkout" element={<Checkout />} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   )
 }
 

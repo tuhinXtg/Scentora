@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import type { Product } from "../types/product";
+import { useCart } from "../context/CartContext";
 import { getProduct } from "../services/productService";
 
 function ProductDetails() {
   const { productId } = useParams<{ productId: string }>();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -186,11 +188,10 @@ function ProductDetails() {
               <button
                 type="button"
                 disabled={product.stock === 0}
+                onClick={() => addToCart(product)}
                 className="mt-8 w-full rounded-xl bg-gray-900 px-6 py-4 font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300"
               >
-                {product.stock > 0
-                  ? "Add to Cart"
-                  : "Out of Stock"}
+                {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
               </button>
 
               {/* Back */}
