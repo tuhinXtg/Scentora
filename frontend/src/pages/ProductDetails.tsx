@@ -12,7 +12,7 @@ function ProductDetails() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [quantity, setQuantity] = useState(1);
   useEffect(() => {
     async function loadProduct() {
       if (!productId) {
@@ -162,7 +162,11 @@ function ProductDetails() {
                 <div className="mt-2 flex w-32 items-center rounded-xl border border-gray-300">
                   <button
                     type="button"
-                    className="flex h-11 w-10 items-center justify-center text-lg text-gray-500 hover:text-gray-900"
+                    onClick={() =>
+                      setQuantity((current) => Math.max(1, current - 1))
+                    }
+                    disabled={quantity === 1}
+                    className="flex h-11 w-10 items-center justify-center text-lg text-gray-500 transition hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     −
                   </button>
@@ -171,13 +175,27 @@ function ProductDetails() {
                     id="quantity"
                     type="number"
                     min="1"
-                    defaultValue="1"
+                    max={product.stock}
+                    value={quantity}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+
+                      if (value >= 1 && value <= product.stock) {
+                        setQuantity(value);
+                      }
+                    }}
                     className="h-11 w-12 border-x border-gray-300 text-center outline-none"
                   />
 
                   <button
                     type="button"
-                    className="flex h-11 w-10 items-center justify-center text-lg text-gray-500 hover:text-gray-900"
+                    onClick={() =>
+                      setQuantity((current) =>
+                        Math.min(product.stock, current + 1)
+                      )
+                    }
+                    disabled={quantity >= product.stock}
+                    className="flex h-11 w-10 items-center justify-center text-lg text-gray-500 transition hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     +
                   </button>
@@ -188,7 +206,7 @@ function ProductDetails() {
               <button
                 type="button"
                 disabled={product.stock === 0}
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart(product, quantity)}
                 className="mt-8 w-full rounded-xl bg-gray-900 px-6 py-4 font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300"
               >
                 {product.stock > 0 ? "Add to Cart" : "Out of Stock"}

@@ -11,7 +11,7 @@ import type { CartItem } from "../types/cart";
 
 interface CartContextType {
     items: CartItem[];
-    addToCart: (product: Product) => void;
+    addToCart: (product: Product, quantity?: number) => void;
     decreaseQuantity: (productId: number) => void;
     removeFromCart: (productId: number) => void;
     clearCart: () => void;
@@ -47,7 +47,7 @@ export function CartProvider({ children }: CartProviderProps) {
         );
     }, [items]);
 
-    function addToCart(product: Product) {
+    function addToCart(product: Product, quantity = 1) {
         setItems((currentItems) => {
             const existingItem = currentItems.find(
                 (item) => item.product.id === product.id
@@ -58,17 +58,19 @@ export function CartProvider({ children }: CartProviderProps) {
                     item.product.id === product.id
                         ? {
                             ...item,
-                            quantity: item.quantity + 1,
+                            quantity: Math.min(
+                                item.quantity + quantity,
+                                Number(product.stock)
+                            ),
                         }
                         : item
                 );
             }
-
             return [
                 ...currentItems,
                 {
                     product,
-                    quantity: 1,
+                    quantity: Math.min(quantity, Number(product.stock)),
                 },
             ];
         });
