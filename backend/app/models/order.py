@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
-
+from app.models.product import Product
 
 class Order(Base):
     __tablename__ = "orders"
@@ -69,4 +69,8 @@ class OrderItem(Base):
 
     order: Mapped["Order"] = relationship(
         back_populates="items"
+    )
+    
+    product: Mapped["Product"] = relationship(
+        "Product"
     )

@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 
-import type { OrderResponse } from "../types/order";
+import type { Order } from "../types/order";
+import { generateOrderBill } from "../utils/generateOrderBill";
 
 function OrderSuccess() {
     const location = useLocation();
 
-    const order = location.state?.order as OrderResponse | undefined;
+    const order = location.state?.order as Order | undefined;
 
     if (!order) {
         return (
@@ -69,6 +70,7 @@ function OrderSuccess() {
                         </h2>
 
                         <div className="mt-5 space-y-4 text-sm">
+
                             <div>
                                 <p className="text-gray-500">Name</p>
                                 <p className="mt-1 font-medium text-gray-900">
@@ -121,6 +123,7 @@ function OrderSuccess() {
                                     Cash on Delivery
                                 </p>
                             </div>
+
                         </div>
                     </section>
 
@@ -130,42 +133,29 @@ function OrderSuccess() {
                             Order Summary
                         </h2>
 
-                        <div className="mt-5 space-y-4">
+                        <div className="mt-5 space-y-5">
+
                             {order.items.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="flex items-center justify-between gap-4"
+                                    className="flex items-center gap-4"
                                 >
-                                    <div>
-                                        <div className="flex items-center gap-3">
-                                            {item.product.image_url ? (
-                                                <img
-                                                    src={item.product.image_url}
-                                                    alt={item.product.name}
-                                                    className="h-14 w-14 rounded-xl object-cover"
-                                                />
-                                            ) : (
-                                                <div className="h-14 w-14 rounded-xl bg-gray-100" />
-                                            )}
+                                    {/* Product Image */}
+                                    {item.product.image_url ? (
+                                        <img
+                                            src={item.product.image_url}
+                                            alt={item.product.name}
+                                            className="h-16 w-16 rounded-xl object-cover"
+                                        />
+                                    ) : (
+                                        <div className="h-16 w-16 rounded-xl bg-gray-100" />
+                                    )}
 
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    {item.product.name}
-                                                </p>
-
-                                                <p className="mt-1 text-sm text-gray-500">
-                                                    Qty: {item.quantity} × BDT{" "}
-                                                    {Number(item.unit_price).toLocaleString()}
-                                                </p>
-                                            </div>
-
-                                            <p className="ml-auto font-medium text-gray-900">
-                                                BDT{" "}
-                                                {(
-                                                    Number(item.unit_price) * item.quantity
-                                                ).toLocaleString()}
-                                            </p>
-                                        </div>
+                                    {/* Product Info */}
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-medium text-gray-900">
+                                            {item.product.name}
+                                        </p>
 
                                         <p className="mt-1 text-sm text-gray-500">
                                             Qty: {item.quantity} × BDT{" "}
@@ -173,18 +163,22 @@ function OrderSuccess() {
                                         </p>
                                     </div>
 
+                                    {/* Item Total */}
                                     <p className="font-medium text-gray-900">
                                         BDT{" "}
                                         {(
-                                            Number(item.unit_price) * item.quantity
+                                            Number(item.unit_price) *
+                                            item.quantity
                                         ).toLocaleString()}
                                     </p>
                                 </div>
                             ))}
+
                         </div>
 
                         <div className="my-6 border-t border-gray-200" />
 
+                        {/* Subtotal */}
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">
                                 Subtotal
@@ -195,6 +189,7 @@ function OrderSuccess() {
                             </span>
                         </div>
 
+                        {/* Delivery */}
                         <div className="mt-4 flex justify-between text-sm">
                             <span className="text-gray-500">
                                 Delivery
@@ -207,6 +202,7 @@ function OrderSuccess() {
 
                         <div className="my-6 border-t border-gray-200" />
 
+                        {/* Total */}
                         <div className="flex items-center justify-between">
                             <span className="font-medium text-gray-900">
                                 Total
@@ -217,6 +213,7 @@ function OrderSuccess() {
                             </span>
                         </div>
 
+                        {/* Status */}
                         <div className="mt-5 rounded-xl bg-gray-50 px-4 py-3">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">
@@ -228,18 +225,32 @@ function OrderSuccess() {
                                 </span>
                             </div>
                         </div>
+
                     </section>
                 </div>
 
                 {/* Actions */}
-                <div className="mt-8 text-center">
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+
+                    {/* Download Bill */}
+                    <button
+                        type="button"
+                        onClick={() => generateOrderBill(order)}
+                        className="inline-flex rounded-xl bg-gray-700 px-7 py-3.5 font-medium text-white transition hover:bg-gray-700"
+                    >
+                        Download Bill
+                    </button>
+
+                    {/* Continue Shopping */}
                     <Link
                         to="/products"
                         className="inline-flex rounded-xl bg-gray-900 px-7 py-3.5 font-medium text-white transition hover:bg-gray-700"
                     >
                         Continue Shopping
                     </Link>
+
                 </div>
+
             </div>
         </main>
     );

@@ -1,8 +1,7 @@
 from decimal import Decimal
-
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import update
 from sqlalchemy.orm import Session
-
 from app.db.dependencies import get_db
 from app.models.order import Order, OrderItem
 from app.models.product import Product
@@ -36,13 +35,24 @@ def create_order(
                 detail=f"Product {item_data.product_id} not found",
             )
 
-        if item_data.quantity > product.stock:
+        stock_update = (
+            update(Product)
+            .where(
+                Product.id == product.id,
+                Product.stock >= item_data.quantity,
+            )
+            .values(
+                stock=Product.stock - item_data.quantity
+            )
+        )
+
+        result = db.execute(stock_update)
+
+        if result.rowcount == 0:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Not enough stock for {product.name}",
-            )
-        # removing stocks after placing order
-        product.stock -= item_data.quantity   
+            )  
 
         item_total = product.price * item_data.quantity
         subtotal += item_total
@@ -55,7 +65,15 @@ def create_order(
 
         order_items.append(order_item)
 
-    delivery_fee = Decimal("80.00")
+    if order_data.delivery_area == "inside_dhaka":
+        delivery_fee = Decimal("60.00")
+    elif order_data.delivery_area == "outside_dhaka":
+        delivery_fee = Decimal("120.00")
+    else:
+        raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Invalid delivery area",
+    )
     total = subtotal + delivery_fee
 
     order = Order(

@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field
+from datetime import datetime
 from decimal import Decimal
+
+from pydantic import BaseModel, Field
 
 
 class OrderItemCreate(BaseModel):
@@ -19,6 +21,27 @@ class OrderCreate(BaseModel):
     items: list[OrderItemCreate] = Field(min_length=1)
 
 
+class OrderProductResponse(BaseModel):
+    id: int
+    name: str
+    image_url: str | None
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class OrderItemResponse(BaseModel):
+    id: int
+    product_id: int
+    product: OrderProductResponse
+    quantity: int
+    unit_price: Decimal
+
+    model_config = {
+        "from_attributes": True
+    }
+
 class OrderResponse(BaseModel):
     id: int
     full_name: str
@@ -32,6 +55,8 @@ class OrderResponse(BaseModel):
     subtotal: Decimal
     delivery_fee: Decimal
     total: Decimal
+    created_at: datetime
+    items: list[OrderItemResponse]
 
     model_config = {
         "from_attributes": True
