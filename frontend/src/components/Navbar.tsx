@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+
+  const { items } = useCart();
+  const cartCount = items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -27,10 +33,9 @@ function Navbar() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `text-sm font-medium transition ${
-                  isActive
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-900"
+                `text-sm font-medium transition ${isActive
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
                 }`
               }
             >
@@ -40,10 +45,9 @@ function Navbar() {
             <NavLink
               to="/products"
               className={({ isActive }) =>
-                `text-sm font-medium transition ${
-                  isActive
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-900"
+                `text-sm font-medium transition ${isActive
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
                 }`
               }
             >
@@ -53,10 +57,9 @@ function Navbar() {
             <NavLink
               to="/about"
               className={({ isActive }) =>
-                `text-sm font-medium transition ${
-                  isActive
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-900"
+                `text-sm font-medium transition ${isActive
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
                 }`
               }
             >
@@ -68,11 +71,17 @@ function Navbar() {
           <div className="hidden items-center gap-4 md:flex">
             <Link
               to="/cart"
-              className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+              className="flex items-center gap-1.5 text-sm font-medium text-gray-700 transition hover:text-gray-900"
             >
               Cart
-            </Link>
 
+              {cartCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-900 px-1.5 text-xs font-medium text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            
             <Link
               to="/login"
               className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700"
@@ -102,10 +111,9 @@ function Navbar() {
                 to="/"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `rounded-lg px-4 py-3 text-sm font-medium ${
-                    isActive
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50"
+                  `rounded-lg px-4 py-3 text-sm font-medium ${isActive
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50"
                   }`
                 }
               >
@@ -116,10 +124,9 @@ function Navbar() {
                 to="/products"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `rounded-lg px-4 py-3 text-sm font-medium ${
-                    isActive
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50"
+                  `rounded-lg px-4 py-3 text-sm font-medium ${isActive
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50"
                   }`
                 }
               >
@@ -130,10 +137,9 @@ function Navbar() {
                 to="/about"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `rounded-lg px-4 py-3 text-sm font-medium ${
-                    isActive
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50"
+                  `rounded-lg px-4 py-3 text-sm font-medium ${isActive
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50"
                   }`
                 }
               >
