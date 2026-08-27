@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useCart } from "../context/CartContext";
+import { createOrder } from "../services/orderServices";
 
 function Checkout() {
-  const { items } = useCart();
+  const { items, clearCart } = useCart();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -24,6 +26,9 @@ function Checkout() {
     city: "",
     deliveryArea: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>
@@ -89,7 +94,45 @@ function Checkout() {
       return;
     }
 
-    console.log("Checkout data:", formData);
+    async function submitOrder() {
+      try {
+        setLoading(true);
+        setApiError("");
+
+        const orderData = {
+          full_name: formData.fullName,
+          phone: formData.phone,
+          email: formData.email || "",
+          address: formData.address,
+          city: formData.city,
+          delivery_area: formData.deliveryArea,
+          payment_method: formData.paymentMethod,
+
+          items: items.map((item) => ({
+            product_id: item.product.id,
+            quantity: item.quantity,
+          })),
+        };
+
+        const order = await createOrder(orderData);
+        console.log("Order created:", order);
+        clearCart();
+        navigate("/order-success", {
+          state: {
+            order,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        setApiError(
+          "Something went wrong while placing your order. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    submitOrder();
   }
 
   if (items.length === 0) {
@@ -377,11 +420,18 @@ function Checkout() {
               </div>
 
               {/* Submit */}
+              {apiError && (
+                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {apiError}
+                </p>
+              )}
+
               <button
                 type="submit"
-                className="w-full rounded-xl bg-gray-900 px-6 py-4 font-medium text-white transition hover:bg-gray-700"
+                disabled={loading}
+                className="w-full rounded-xl bg-gray-900 px-6 py-4 font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-400"
               >
-                Place Order
+                {loading ? "Placing Order..." : "Place Order"}
               </button>
 
             </form>
